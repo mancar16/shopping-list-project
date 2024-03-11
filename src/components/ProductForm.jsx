@@ -4,6 +4,7 @@ import { Categories } from "./arrays";
 import { Button, Table } from "react-bootstrap";
 import JSConfetti from "js-confetti";
 import FuzzySearch from "fuzzy-search";
+import { nanoid } from "nanoid";
 const AddProductForm = () => {
   const [productName, setProductName] = useState("");
   const [selectedShop, setSelectedShop] = useState("");
@@ -28,6 +29,7 @@ const AddProductForm = () => {
       name: productName,
       shop: selectedShop,
       category: selectedCategory,
+      id: nanoid(),
     };
     setProducts([...products, newProduct]);
     setProductName("");
@@ -41,6 +43,10 @@ const AddProductForm = () => {
       }
       return product;
     });
+    if (updatedProducts.every((product) => product.isBought)) {
+      alert("Alışveriş Tamamlandı");
+      JsConfetti.addConfetti();
+    }
     setProducts(updatedProducts);
   };
 
@@ -111,7 +117,7 @@ const AddProductForm = () => {
                   textDecoration: product.isBought ? "line-through" : "none",
                 }}
               >
-                <td>{product.id}</td>
+                <td>{product.id.slice(0, 4)}</td>
                 <td onClick={() => handleBuy(product.id)}>{product.name}</td>
                 <td>
                   <Button onClick={() => handleDelete(product.id)}>Sil</Button>
@@ -120,9 +126,6 @@ const AddProductForm = () => {
             ))}
           </tbody>
         </Table>
-        {products.length > 0 && (
-          <Button onClick={handleCheckOut}>Alışveriş Tamamlandı mı?</Button>
-        )}
       </div>
     </div>
   );
